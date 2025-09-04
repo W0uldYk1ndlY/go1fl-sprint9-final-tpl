@@ -26,7 +26,7 @@ func generateRandomElements(size int) []int {
 	numbers := make([]int, size)
 
 	for i := range numbers {
-		numbers[i] = r.Intn(SIZE)
+		numbers[i] = r.Int()
 	}
 
 	return numbers
@@ -34,7 +34,7 @@ func generateRandomElements(size int) []int {
 
 // maximum returns the maximum number of elements.
 func maximum(data []int) int {
-	if len(data) == 0 || data == nil {
+	if len(data) == 0 {
 		fmt.Println("empty data")
 		return 0
 	}
@@ -53,7 +53,7 @@ func maximum(data []int) int {
 
 // maxChunks returns the maximum number of elements in a chunks.
 func maxChunks(data []int) int {
-	if len(data) == 0 || data == nil {
+	if len(data) == 0 {
 		fmt.Println("empty data")
 		return 0
 	}
@@ -63,8 +63,8 @@ func maxChunks(data []int) int {
 	}
 
 	var wg sync.WaitGroup
-	wg.Add(8)
-	fin := make([]int, CHUNKS+7)
+	wg.Add(CHUNKS)
+	fin := make([]int, CHUNKS+(CHUNKS-1))
 	remainder := len(data) % CHUNKS
 	if remainder != 0 {
 		remainder_slice := data[(len(data) - remainder):]
@@ -72,12 +72,14 @@ func maxChunks(data []int) int {
 	}
 	slice_size := len(data) / CHUNKS
 	for i := range CHUNKS {
-		go func(data []int) {
-			first_index := i * slice_size
-			res := maximum(data[first_index:(first_index + slice_size)])
-			fin = append(fin, res)
+		first_index := i * slice_size
+		chunk := data[first_index:(first_index + slice_size)]
+
+		go func(chunk []int) {
+			res := maximum(chunk)
+			fin[i] = res
 			wg.Done()
-		}(data)
+		}(chunk)
 	}
 	wg.Wait()
 	return maximum(fin)

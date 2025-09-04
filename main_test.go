@@ -9,65 +9,65 @@ import (
 // Пишите тесты в этом файле
 
 func TestGenerateRandomElement(t *testing.T) {
-	//negative size
-	res := generateRandomElements(-1)
-	assert.Nil(t, res)
+	tests := []struct {
+		name  string
+		input int
+		want  int
+	}{
+		{"negative size", -1, 0},
+		{"zero size", 0, 0},
+		{"positive size", 100_000, 100_000},
+	}
 
-	//zero size
-	res = generateRandomElements(0)
-	assert.Nil(t, res)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			res := generateRandomElements(test.input)
+			assert.Len(t, res, test.want)
+		})
+	}
 
-	//positive size
-	res = generateRandomElements(100000)
-	assert.Len(t, res, 100000)
 }
 
 func TestMaximum(t *testing.T) {
-	//empty slice
-	data := make([]int, 0)
-	res := maximum(data)
-	assert.Zero(t, res)
+	tests := []struct {
+		name  string
+		input []int
+		want  int
+	}{
+		{"empty", []int{}, 0},
+		{"nil", nil, 0},
+		{"1 element", []int{128}, 128},
+		{"5 elements", []int{0, -5, 28, 9, 130}, 130},
+	}
 
-	//nil
-	res = maximum(nil)
-	assert.Zero(t, res)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			res := maximum(test.input)
+			assert.Equal(t, test.want, res)
+		})
 
-	//1 element
-	data = make([]int, 1)
-	data[0] = 128
-	res = maximum(data)
-	assert.Equal(t, res, 128)
-
-	//5 elements
-	data = []int{0, -5, 28, 9, 130}
-	res = maximum(data)
-	assert.Equal(t, res, 130)
+	}
 
 }
 
 func TestMaxChunks(t *testing.T) {
-	//empty slice
-	data := make([]int, 0)
-	res := maxChunks(data)
-	assert.Zero(t, res)
+	tests := []struct {
+		name  string
+		input []int
+		want  int
+	}{
+		{"empty slice", make([]int, 0), 0},
+		{"nil", nil, 0},
+		{"1 element", []int{128}, 128},
+		{"8 elements", []int{20, 19, 19, 11, 0, 17, 89, 12}, 89},
+		{"15 elements", []int{20, 19, 19, 11, 0, 17, 89, 12, 150, 77, 89, 60, 54, 65, 63}, 150},
+	}
 
-	//nil
-	res = maxChunks(nil)
-	assert.Zero(t, res)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			res := maxChunks(test.input)
+			assert.Equal(t, test.want, res)
+		})
+	}
 
-	//1 element
-	data = make([]int, 1)
-	data[0] = 128
-	res = maxChunks(data)
-	assert.Equal(t, res, 128)
-
-	//8 elements
-	data = []int{20, 19, 19, 11, 0, 17, 89, 12}
-	res = maxChunks(data)
-	assert.Equal(t, res, 89)
-
-	//15 elements
-	data = []int{20, 19, 19, 11, 0, 17, 89, 12, 150, 77, 89, 60, 54, 65, 63}
-	res = maxChunks(data)
-	assert.Equal(t, res, 150)
 }
