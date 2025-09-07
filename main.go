@@ -64,22 +64,29 @@ func maxChunks(data []int) int {
 
 	var wg sync.WaitGroup
 	wg.Add(CHUNKS)
-	fin := make([]int, CHUNKS+(CHUNKS-1))
-	remainder := len(data) % CHUNKS
-	if remainder != 0 {
-		remainder_slice := data[(len(data) - remainder):]
-		fin = append(fin, remainder_slice...)
-	}
-	slice_size := len(data) / CHUNKS
-	for i := range CHUNKS {
-		first_index := i * slice_size
-		chunk := data[first_index:(first_index + slice_size)]
+	fin := make([]int, CHUNKS)
 
-		go func(chunk []int) {
+	slice_size := len(data) / CHUNKS
+	remainder := len(data) % CHUNKS
+	first_index := 0
+	for i := range CHUNKS {
+		var chunk_size int
+
+		if i < remainder {
+			chunk_size = slice_size + 1
+		} else {
+			chunk_size = slice_size
+		}
+
+		last_index := first_index + chunk_size
+		chunk := data[first_index:last_index]
+		first_index = last_index
+
+		go func(chunk []int, index int) {
 			res := maximum(chunk)
-			fin[i] = res
+			fin[index] = res
 			wg.Done()
-		}(chunk)
+		}(chunk, i)
 	}
 	wg.Wait()
 	return maximum(fin)

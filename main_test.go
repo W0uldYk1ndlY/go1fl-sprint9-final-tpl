@@ -60,7 +60,7 @@ func TestMaxChunks(t *testing.T) {
 		{"nil", nil, 0},
 		{"1 element", []int{128}, 128},
 		{"8 elements", []int{20, 19, 19, 11, 0, 17, 89, 12}, 89},
-		{"15 elements", []int{20, 19, 19, 11, 0, 17, 89, 12, 150, 77, 89, 60, 54, 65, 63}, 150},
+		{"15 elements", []int{20, 15, 13, 11, 0, 17, 89, 12, 150, 77, 89, 60, 54, 65, 163}, 163},
 	}
 
 	for _, test := range tests {
